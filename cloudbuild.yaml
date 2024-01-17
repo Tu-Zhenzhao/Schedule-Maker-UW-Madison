@@ -1,5 +1,5 @@
 steps:
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['functions', 'deploy', 'schedule-maker-function', '--runtime', 'python39', '--trigger-http', '--allow-unauthenticated', '--entry-point', 'main.app']
+  args: ['functions', 'deploy', 'schedule-maker-function', '--runtime', 'python39', '--trigger-http', '--allow-unauthenticated', '--entry-point', 'app']
   timeout: '1600s'
 

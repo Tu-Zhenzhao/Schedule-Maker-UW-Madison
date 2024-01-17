@@ -1,0 +1,3 @@
+runtime: python39  # Specify the Python version
+entrypoint: gunicorn -b :$PORT main:app  # Replace 'main' with the name of your Python file without '.py'
+

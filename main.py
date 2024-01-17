@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, send_file
 from flask_cors import CORS
 import io
 import datetime
@@ -6,6 +6,14 @@ import cal_web  # Import your cal_web script
 
 app = Flask(__name__)
 CORS(app)
+
+#@app.route('/')
+#def hello():
+#    return 'Hello, World!'
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
 
 @app.route('/generate-ics', methods=['POST'])
 def generate_ics():
@@ -29,20 +37,10 @@ def generate_ics():
     zip_file = io.BytesIO(zip_data)
     zip_file.seek(0)
 
-    return send_file(zip_file, as_attachment=True, attachment_filename='schedule.zip', mimetype='application/zip')
+    return send_file(zip_file, as_attachment=True, download_name='schedule.zip', mimetype='application/zip')
 
 
-def entry_point(request):
-    """Responds to any HTTP request.
-    Args:
-        request (flask.Request): HTTP request object.
-    Returns:
-        The response text or any set of values that can be turned into a
-        Response object using `make_response`
-        <http://flask.palletsprojects.com/en/1.1.x/api/#flask.Flask.make_response>.
-    """
-    return app(request)
 
-#if __name__ == '__main__':
-#    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
 

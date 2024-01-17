@@ -30,7 +30,8 @@
             formData.forEach((value, key) => data[key] = value);
 
             // Send data to serverless function
-            fetch('http://127.0.0.1:5000/generate-ics', {
+						//https://schedule-maker-411505.uc.r.appspot.com
+            fetch('https://schedule-maker-411505.uc.r.appspot.com/generate-ics', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

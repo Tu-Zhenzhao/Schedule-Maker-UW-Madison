@@ -1,4 +1,4 @@
 steps:
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['functions', 'deploy', 'schedule-maker', '--runtime', 'python39', '--trigger-http', '--allow-unauthenticated']
+  args: ['functions', 'deploy', 'schedule-maker-function', '--runtime', 'python39', '--trigger-http', '--allow-unauthenticated']
 

@@ -1,4 +1,5 @@
 Flask==2.1.2
+Werkzeug==2.0.2
 Flask-CORS
 pytz
 icalendar

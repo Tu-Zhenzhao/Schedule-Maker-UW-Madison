@@ -31,6 +31,18 @@ def generate_ics():
 
     return send_file(zip_file, as_attachment=True, attachment_filename='schedule.zip', mimetype='application/zip')
 
+
+def entry_point(request):
+    """Responds to any HTTP request.
+    Args:
+        request (flask.Request): HTTP request object.
+    Returns:
+        The response text or any set of values that can be turned into a
+        Response object using `make_response`
+        <http://flask.palletsprojects.com/en/1.1.x/api/#flask.Flask.make_response>.
+    """
+    return app(request)
+
 #if __name__ == '__main__':
 #    app.run(debug=True)
 

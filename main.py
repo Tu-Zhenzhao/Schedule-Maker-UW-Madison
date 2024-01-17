@@ -31,6 +31,6 @@ def generate_ics():
 
     return send_file(zip_file, as_attachment=True, attachment_filename='schedule.zip', mimetype='application/zip')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+#    app.run(debug=True)
 

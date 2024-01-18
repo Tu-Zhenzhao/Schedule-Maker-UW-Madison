@@ -18,7 +18,7 @@ Just as simple as that!😼
 
 ## User Tips
 - This web app is designed for UW-Madison students, so it only supports UW-Madison course schedule format.
-- The format is sensitive, so please make sure you copy the schedule list correctly. (Make sure include the *Monday* or *Tuesday* or *Wednesday* or *Thursday* or *Friday* or *Saturday* or *Sunday* in the schedule list)
+- The format is sensitive, so please make sure you copy the schedule list correctly. (Make sure include the weekdays in the schedule list)
 - Please double check the start and end time of your class is correct (end time should be later than start time!!). If not, the event will have no week repeat.
 
 ## About Author
@@ -26,4 +26,4 @@ Just as simple as that!😼
 - If you are interested the how to develop this small web, check out my [website](https://math.tuzhenzhao.com) 📒
 - Feel free to contact me if you have any questions or suggestions. My email is [here](tuzhenzhao@gmail.com) 📧
 
-☕️ If you think it is helpful, please consider buying me a coffee [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/tuzhenzhao) 
+☕️ If you think it is helpful, please consider buying me a coffee [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/tuzhenzhaou) 

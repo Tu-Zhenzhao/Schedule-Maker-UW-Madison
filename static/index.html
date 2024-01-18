@@ -6,7 +6,16 @@
     <title>Schedule to ICS Converter</title>
 </head>
 <body>
-    <h1>Upload Your Schedule</h1>
+    <h1>UW-Madison Class Schedule Maker</h1>
+		<p style= "font-style: italic;"> How to find the list of classes: </p>
+		<p> 1. Go to <a href="https://my.wisc.edu/web/expanded">MyUW</a> </p>
+		<p> 2. Click on "Course Schedule" </p>
+		<p> 3. Click on "Print" </p>
+		<p> 4. Copy the list of classes and paste it into the text box below </p>
+		<p> 5. Enter the start and end date of the semester </p>
+		<p> 6. Click "Generate ICS File" </p>
+		<p style="color: red; font-weight: bold;"> WARNING: This system is not perfect. Please strictly follow the instructions above. Just copy all the schedule list under the calendar then paste into "Schedule List" box will be fine.</p>
+		<p> Let's get started! 👇👇👇</p>
     <form id="scheduleForm">
         <label for="schedule">Schedule List:</label><br>
         <textarea id="schedule" name="schedule" rows="4" cols="50" required></textarea><br><br>
@@ -53,6 +62,15 @@
             .catch(error => console.error('Error:', error));
         });
     </script>
+
+		<footer>
+			<p style= "font-style: italic;">Created by Zhenzhao Tu <br>
+			This project is open source. There is also local Python Script version. Check it out on <a href="https://github.com/Tu-Zhenzhao/Schedule-Maker-UW-Madison.git">GitHub</a> 🤓 <br>
+			If you are interested the how to develop this small web, check out my <a href="https://math.tuzhenzhao.com">website</a>📒 <br>
+			Feel free to contact me if you have any questions or suggestions. My email is <a href="mailto:tuzhenzhao@gmail.com">here</a>📧 <br>
+			If you think it is helpful, please consider <a href="https://www.buymeacoffee.com/tuzhenzhaou">buying me a coffee</a>☕️</p>
+		</footer>
+
 </body>
 </html>
 

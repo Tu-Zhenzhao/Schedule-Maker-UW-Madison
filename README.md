@@ -1,5 +1,7 @@
-# Schedule Auto Converter UW-Madison
-This is a one stop web project for UW-Madison students making their class schedule. Copy your schedule list then paste it into the text box, then you can get the `.ics` ready for you to import into your calendar.
+# MadCal: "Class Schedule" Calendar Generator
+No more manually entering all your classes into your calendar!
+
+This is a one-stop tool for UW-Madison students making their class schedule. Follow the below steps to automatically create a file with all your classes which can be uploaded to Google Calendar or Outlook!
 
 This project is open source. There is also local Python Script version.
 
@@ -7,23 +9,24 @@ This project is open source. There is also local Python Script version.
 
 ## How to use
 1. Go to your [MyUW](https://my.wisc.edu/web/expanded)
-2. Click on **Course Schedule**
-3. Click on **Print** button
-4. Copy the class schedule list under the calendar chart
-5. Paste it into the text box
-6. Click on **Generate ICS File** button
-7. Import the `.ics` file into your calendar
+2. Click on "Course Schedule"
+3. Select the correct Term
+4. Scroll down, and copy the entire list of Courses (everything below the calendar view) and paste it into the text box below
+5. Enter the start and end date of the semester
+6. Click "Generate ICS File"
 
 Just as simple as that!😼
 
 ## User Tips
 - This web app is designed for UW-Madison students, so it only supports UW-Madison course schedule format.
-- The format is sensitive, so please make sure you copy the schedule list correctly. (Make sure include the weekdays in the schedule list)
+- The format is sensitive, so please make sure you copy the schedule list correctly. (Make sure to copy the entire schedule list under the calendar then paste into the "Schedule List" box.)
 - Please double check the start and end time of your class is correct (end time should be later than start time!!). If not, the event will have no week repeat.
 
-## About Author
-- Created by *Zhenzhao Tu* 🤓
-- If you are interested the how to develop this small web, check out my [website](https://math.tuzhenzhao.com) 📒
-- Feel free to contact me if you have any questions or suggestions. My email is [here](tuzhenzhao@gmail.com) 📧
+## About Authors
+- Created by *Alex Holland* and *Zhenzhao Tu* 🤓
+- If you are interested in how this site was developed, check out [Zhenzhao's website](https://math.tuzhenzhao.com) 📒
+- Feel free to contact us if you have any questions or suggestions. Email [here](tuzhenzhao@gmail.com) 📧
 
-☕️ If you think it is helpful, please consider buying me a coffee [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/tuzhenzhaou) 
+☕️ If this site was helpful, please consider [!["Buying Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/tuzhenzhaou) 
+
+Not Affiliated with UW-Madison

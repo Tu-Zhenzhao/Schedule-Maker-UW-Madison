@@ -5,7 +5,7 @@ This is a one-stop tool for UW-Madison students making their class schedule. Fol
 
 This project is open source. There is also local Python Script version.
 
-![screenshot](screenshot_2.png)
+![screenshot](screenshot.png)
 
 ## How to use
 1. Go to your [MyUW](https://my.wisc.edu/web/expanded)

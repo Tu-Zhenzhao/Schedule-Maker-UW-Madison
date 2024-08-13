@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <title>Schedule to ICS Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #C5050C;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .warning-board {
+            background-color: #ffe0e0;
+            padding: 20px;
+            border: 2px solid #e60000;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .warning-text {
+            color: #e60000;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        p, label {
+            margin: 10px 0;
+        }
+
+        a {
+            color: #e60000;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        textarea, input[type="date"], input[type="submit"] {
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #e60000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #cc0000;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: #fff;
+            margin-top: 40px;
+            border-top: 1px solid #444;
+        }
+
+        footer a {
+            color: #e60000;
+        }
+
+        .instructions {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .instructions p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>MadCal: "Class Schedule" Calendar Generator</h1>
+    </header>
+    <div class="container">
+        <!-- <div class="warning-board">
+            <p class="warning-text">Attention: Website maintenance in progress due to MyUW interface updates. Last updated on 2024.7.31</p>
+        </div> -->
+        <div>
+            <h3>No more manually entering all your classes into your calendar! <br><br> Follow the below steps to automatically create a file with all your classes which can be uploaded to Google Calendar or Outlook!</h3>
+        </div>
+        <div class="instructions">
+            <p>How to find the list of classes:</p>
+            <p>1. Go to <a href="https://my.wisc.edu/web/expanded" target="_blank">MyUW</a></p>
+            <p>2. Click on "Course Schedule"</p>
+            <p>3. Select the correct Term</p>
+            <p>4. Scroll down, and copy the entire list of Courses (everything below the calendar view) and paste it into the text box below</p>
+            <p>5. Enter the start and end date of the semester</p>
+            <p>6. Click "Generate ICS File"</p>
+            <p style="color: #e60000; font-weight: bold;">NOTE: Please strictly follow the instructions above. Copy the entire schedule list under the calendar then paste into the "Schedule List" box.</p>
+            <p>Let's get started! 👇👇👇</p>
+        </div>
+        <form id="scheduleForm">
+            <label for="schedule">Schedule List:</label>
+            <textarea id="schedule" name="schedule" rows="6" cols="100" required></textarea>
+
+            <label for="startDate">Start Date of Semester:</label>
+            <input type="date" id="startDate" name="startDate" required>
+
+            <label for="endDate">End Date of Semester:</label>
+            <input type="date" id="endDate" name="endDate" required>
+
+            <input type="submit" value="Generate ICS File">
+        </form>
+    </div>
+
+    <footer>
+        <p>Created by <a href="https://www.alexholland.tech">Alex Holland</a> and Zhenzhao Tu</p>
+        <p>This project is open source. Check it out on <a href="https://github.com/Tu-Zhenzhao/Schedule-Maker-UW-Madison.git">GitHub</a> 🤓</p>
+        <p>If you are interested in how this site was developed, check out <a href="https://math.tuzhenzhao.com">Zhenzhao's website</a>📒</p>
+        <p>Feel free to contact us if you have any questions or suggestions. Email <a href="mailto:tuzhenzhao@gmail.com">here</a>📧</p>
+        <p>If this site was helpful, please consider <a href="https://www.buymeacoffee.com/tuzhenzhaou">buying me a coffee</a>☕️</p>
+        <p>Not Affiliated with UW-Madison</p>
+    </footer>
+
+    <script>
+        document.getElementById('scheduleForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Collect form data
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+
+            // Send data to serverless function
+            fetch('https://schedule-maker-411505.uc.r.appspot.com/generate-ics', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                // Create a link to download the .ics file
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'schedule.zip';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

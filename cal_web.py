@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import re
 import io
 import zipfile
+from collections import defaultdict
 
 def create_ics_file(event_details, start_date, end_date):
     cal = Calendar()
@@ -18,6 +19,70 @@ def create_ics_file(event_details, start_date, end_date):
 
     
     return cal.to_ical()
+
+def convert_schedule_format(new_format_text):
+    # Dictionary to map abbreviations to full day names
+    day_map = {
+        'M': ['Monday'],
+        'T': ['Tuesday'],
+        'W': ['Wednesday'],
+        'R': ['Thursday'],
+        'F': ['Friday'],
+        'MW': ['Monday', 'Wednesday'],
+        'TR': ['Tuesday', 'Thursday'],
+        'MWF': ['Monday', 'Wednesday', 'Friday'],
+    }
+
+    # Regular expressions to match course details
+    course_regex = r'^(.*?):\s+(.*)$'
+    meeting_regex = r'^(LEC|DIS)\s+([MTWRF]+)\s+(\d{1,2}:\d{2}\s+[APM]{2})\s*-\s*(\d{1,2}:\d{2}\s+[APM]{2})\s+(.*)$'
+
+    # Parse the input text
+    lines = new_format_text.strip().split('\n')
+    schedule = defaultdict(list)
+    current_course = None
+
+    for line in lines:
+        line = line.strip()
+
+        # Check if the line matches a course
+        course_match = re.match(course_regex, line)
+        if course_match:
+            current_course = course_match.group(0).strip()
+            course_code = course_match.group(0).split(':', 1)[0].strip()
+            course_title = course_match.group(0).split(':', 1)[1].strip()
+
+            continue
+
+        # Check if the line matches a meeting (LEC, DIS, etc.)
+        meeting_match = re.match(meeting_regex, line)
+        if meeting_match and current_course:
+            meeting_type = meeting_match.group(1).strip()
+            days = meeting_match.group(2).strip()
+            start_time = meeting_match.group(3).strip()
+            end_time = meeting_match.group(4).strip()
+            location = meeting_match.group(5).strip()
+
+            # For each day, add the meeting details to the schedule
+            for day in day_map[days]:
+                # For the exact format as previous
+                schedule[day].append(f"{current_course}\n{meeting_type}\n{location}\n{start_time} to {end_time}\n")
+                
+                # For the format I think it should be
+                # schedule[day].append(f"{course_code} {meeting_type}\n{course_title}\n{location}\n{start_time} to {end_time}\n")
+            continue
+
+    # Format the output in the required format
+    output_lines = []
+    for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']:
+        if day in schedule:
+            output_lines.append(day)
+            for event in schedule[day]:
+                output_lines.append(event)
+            # output_lines.append('')
+
+    return '\n'.join(output_lines).strip()
+
 
 def parse_input(input_text):
     schedule = {}
@@ -49,6 +114,34 @@ def parse_input(input_text):
 
     return schedule
 
+
+# Function to take individual ics files and reformat them into a single ics file
+# Inputs: 
+#           ics_list, a list containing each of the ics files
+#           output_file, the string path where the file is saved
+# Returns:  
+#           schedule_file, the combined ics file
+#
+def combine_ics_files(ics_list):
+    combined_ics_content = "BEGIN:VCALENDAR\nVERSION:2.0\n"
+    timezone_included = False  # To track if VTIMEZONE has already been added
+    
+    for ics_data in ics_list:
+        cal = Calendar.from_ical(ics_data)
+        
+        for component in cal.walk():
+            if component.name == "VTIMEZONE":
+                if not timezone_included:
+                    combined_ics_content += component.to_ical().decode("utf-8") + "\n"
+                    timezone_included = True
+            
+            elif component.name == "VEVENT":
+                combined_ics_content += component.to_ical().decode("utf-8") + "\n"
+    
+    # Finish the .ics file with the standard footer
+    combined_ics_content += "END:VCALENDAR\n"
+    
+    return combined_ics_content
 
 
 
@@ -85,20 +178,21 @@ def parse_and_create_ics_files(schedule, start_date, end_date):
             ics_data = create_ics_file(event_details, start_date, end_date)
             ical_data_list.append(ics_data)
 
+            # Combine individual ics files into one master ics file
+            schedule_file = combine_ics_files(ical_data_list)
+
     # Create a ZIP file in memory
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
-        for i, ical_data in enumerate(ical_data_list):
-            # Generate a file name for each .ics file
-            file_name = f"event_{i}.ics"
-            zip_file.writestr(file_name, ical_data)
+        zip_file.writestr("your_schedule", schedule_file)
 
     # Prepare the ZIP file to be read
     zip_buffer.seek(0)
     return zip_buffer.getvalue()
 
-
-
+###########
+# Zhenzhao, is the below function necessary? I don't see you calling it anywhere
+###########
 def schedule_to_ics(request):
     request_json = request.get_json(silent=True)
     request_args = request.args
@@ -122,7 +216,8 @@ def schedule_to_ics(request):
     except ValueError as e:
         return f"Invalid date input: {e}", 400
 
-    schedule = parse_input(text_input)
+    reformatted_text = convert_schedule_format(text_input)
+    schedule = parse_input(reformatted_text)
     ical_data = parse_and_create_ics_files(schedule, start_date, end_date)
 
     # Return the iCal data

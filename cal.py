@@ -2,6 +2,10 @@ from icalendar import Calendar, Event
 import pytz
 from datetime import datetime, timedelta
 import re
+from collections import defaultdict
+import io
+import zipfile
+
 
 def create_ics_file(event_details, start_date, end_date):
     cal = Calendar()
@@ -14,11 +18,78 @@ def create_ics_file(event_details, start_date, end_date):
     event.add('rrule', {'freq': 'weekly', 'until': end_date, 'byday': event_details['day'][:2].upper()})
     cal.add_component(event)
 
-    file_name = f"./{event_details['title'].replace(' ', '_').replace(':', '')}_{event_details['description'].replace(' ', '_')}.ics"
-    with open(file_name, 'wb') as f:
-        f.write(cal.to_ical())
-    
-    return file_name
+    # Moved file creation to later so this function is same as in cal_web.py
+    return cal.to_ical()
+
+
+# Function to parse the UW Course Schedule text and reformat it into the legacy format
+# Inputs: 
+#           new_format_text, the user text input in the new format
+# Returns:  
+#           A string containing the schedule in the legacy format
+#
+def convert_schedule_format(new_format_text):
+    # Dictionary to map abbreviations to full day names
+    day_map = {
+        'M': ['Monday'],
+        'T': ['Tuesday'],
+        'W': ['Wednesday'],
+        'R': ['Thursday'],
+        'F': ['Friday'],
+        'MW': ['Monday', 'Wednesday'],
+        'TR': ['Tuesday', 'Thursday'],
+        'MWF': ['Monday', 'Wednesday', 'Friday'],
+    }
+
+    # Regular expressions to match course details
+    course_regex = r'^(.*?):\s+(.*)$'
+    meeting_regex = r'^(LEC|DIS)\s+([MTWRF]+)\s+(\d{1,2}:\d{2}\s+[APM]{2})\s*-\s*(\d{1,2}:\d{2}\s+[APM]{2})\s+(.*)$'
+
+    # Parse the input text
+    lines = new_format_text.strip().split('\n')
+    schedule = defaultdict(list)
+    current_course = None
+
+    for line in lines:
+        line = line.strip()
+
+        # Check if the line matches a course
+        course_match = re.match(course_regex, line)
+        if course_match:
+            current_course = course_match.group(0).strip()
+            course_code = course_match.group(0).split(':', 1)[0].strip()
+            course_title = course_match.group(0).split(':', 1)[1].strip()
+
+            continue
+
+        # Check if the line matches a meeting (LEC, DIS, etc.)
+        meeting_match = re.match(meeting_regex, line)
+        if meeting_match and current_course:
+            meeting_type = meeting_match.group(1).strip()
+            days = meeting_match.group(2).strip()
+            start_time = meeting_match.group(3).strip()
+            end_time = meeting_match.group(4).strip()
+            location = meeting_match.group(5).strip()
+
+            # For each day, add the meeting details to the schedule
+            for day in day_map[days]:
+                # Old calendar event format
+                # schedule[day].append(f"{current_course}\n{meeting_type}\n{location}\n{start_time} to {end_time}\n")
+                
+                # Updated cleaner calendar format
+                schedule[day].append(f"{course_code} {meeting_type}\n{course_title}\n{location}\n{start_time} to {end_time}\n")
+            continue
+
+    # Format the output in the required format
+    output_lines = []
+    for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']:
+        if day in schedule:
+            output_lines.append(day)
+            for event in schedule[day]:
+                output_lines.append(event)
+
+    return '\n'.join(output_lines).strip()
+
 
 def parse_input(input_text):
     schedule = {}
@@ -83,16 +154,45 @@ def parse_and_create_ics_files(schedule, start_date, end_date):
             }
 
             file_name = create_ics_file(event_details, start_date, end_date)
+            
             event_files.append(file_name)
 
-    return event_files
+            schedule_file = combine_ics_files(event_files)
 
+    return schedule_file
 
+# Function to take individual ics files and reformat them into a single ics file
+# Inputs: 
+#           ics_list, a list containing each of the ics files
+#           output_file, the string path where the file is saved
+# Returns:  
+#           schedule_file, the combined ics file
+#
+def combine_ics_files(ics_list):
+    combined_ics_content = "BEGIN:VCALENDAR\nVERSION:2.0\n"
+    timezone_included = False  # To track if VTIMEZONE has already been added
+    
+    for ics_data in ics_list:
+        cal = Calendar.from_ical(ics_data)
+        
+        for component in cal.walk():
+            if component.name == "VTIMEZONE":
+                if not timezone_included:
+                    combined_ics_content += component.to_ical().decode("utf-8") + "\n"
+                    timezone_included = True
+            
+            elif component.name == "VEVENT":
+                combined_ics_content += component.to_ical().decode("utf-8") + "\n"
+    
+    # Finish the .ics file with the standard footer
+    combined_ics_content += "END:VCALENDAR\n"
+    
+    return combined_ics_content
 
 
 def main():
     file_path = input("Enter the path to your schedule text file: ").strip()
-
+    output_file = "./full_schedule.ics"
     try:
         with open(file_path, 'r') as file:
             input_text = file.read()
@@ -112,12 +212,25 @@ def main():
         print(f"Invalid date input: {e}")
         return
 
-    schedule = parse_input(input_text)
-    ics_files = parse_and_create_ics_files(schedule, start_date, end_date)
+    reformatted_text = convert_schedule_format(input_text)
+    schedule = parse_input(reformatted_text)
+    ical_data = parse_and_create_ics_files(schedule, start_date, end_date)
 
-    print("Generated .ics files:")
-    for file in ics_files:
-        print(file)
+###################
+    # Create a ZIP file in memory
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
+        zip_file.writestr("your_schedule", ical_data)
+
+    # Prepare the ZIP file to be read
+    zip_buffer.seek(0)
+
+    # Save the ZIP file to the local machine
+    with open('your_schedule.zip', 'wb') as f:
+        f.write(zip_buffer.getvalue())
+
+    print("ZIP file has been saved to your local machine as 'your_schedule.zip'")
+###################
 
 if __name__ == "__main__":
     main()

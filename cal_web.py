@@ -66,10 +66,10 @@ def convert_schedule_format(new_format_text):
             # For each day, add the meeting details to the schedule
             for day in day_map[days]:
                 # For the exact format as previous
-                schedule[day].append(f"{current_course}\n{meeting_type}\n{location}\n{start_time} to {end_time}\n")
+                # schedule[day].append(f"{current_course}\n{meeting_type}\n{location}\n{start_time} to {end_time}\n")
                 
                 # For the format I think it should be
-                # schedule[day].append(f"{course_code} {meeting_type}\n{course_title}\n{location}\n{start_time} to {end_time}\n")
+                schedule[day].append(f"{course_code} {meeting_type}\n{course_title}\n{location}\n{start_time} to {end_time}\n")
             continue
 
     # Format the output in the required format

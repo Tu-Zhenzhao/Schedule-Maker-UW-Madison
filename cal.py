@@ -192,7 +192,6 @@ def combine_ics_files(ics_list):
 
 def main():
     file_path = input("Enter the path to your schedule text file: ").strip()
-    output_file = "./full_schedule.ics"
     try:
         with open(file_path, 'r') as file:
             input_text = file.read()
@@ -220,7 +219,7 @@ def main():
     # Create a ZIP file in memory
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
-        zip_file.writestr("your_schedule", ical_data)
+        zip_file.writestr("your_schedule.ics", ical_data)
 
     # Prepare the ZIP file to be read
     zip_buffer.seek(0)

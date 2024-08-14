@@ -184,7 +184,7 @@ def parse_and_create_ics_files(schedule, start_date, end_date):
     # Create a ZIP file in memory
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
-        zip_file.writestr("your_schedule", schedule_file)
+        zip_file.writestr("your_schedule.ics", schedule_file)
 
     # Prepare the ZIP file to be read
     zip_buffer.seek(0)

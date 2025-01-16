@@ -35,7 +35,7 @@ def convert_schedule_format(new_format_text):
 
     # Regular expressions to match course details
     course_regex = r'^(.*?):\s+(.*)$'
-    meeting_regex = r'^(LEC|DIS)\s+([MTWRF]+)\s+(\d{1,2}:\d{2}\s+[APM]{2})\s*-\s*(\d{1,2}:\d{2}\s+[APM]{2})\s+(.*)$'
+    meeting_regex = r'^(LEC|DIS)\s+\d{3}\s+([MTWRF]+)\s+(\d{1,2}:\d{2}\s+[APM]{2})\s*-\s*(\d{1,2}:\d{2}\s+[APM]{2})\s+(.*)$'
 
     # Parse the input text
     lines = new_format_text.strip().split('\n')

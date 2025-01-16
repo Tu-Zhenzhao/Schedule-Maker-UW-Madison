@@ -1,23 +1,22 @@
 Courses
-COMP SCI 544: Introduction to Big Data Systems
+COMP SCI 642: Introduction to Information Security
 Weekly Meetings
-LEC MWF 2:25 PM - 3:15 PM Agricultural Hall Room 125
+LEC 001 TR 2:30 PM - 3:45 PM Engineering Hall Room 1227
 Exams
-December 13, 7:45 AM - 9:45 AM
-KINES 100: Exercise, Nutrition, and Health
+May 6, 2:45 PM - 4:45 PM - Location not specified
+COMP SCI 570: Introduction to Human-Computer Interaction
 Weekly Meetings
-LEC MW 12:05 PM - 12:55 PM Bardeen Medical Laboratories Room 140
+LEC 001 MWF 12:05 PM - 12:55 PM Educational Sciences Room 204
 Exams
-December 18, 2:45 PM - 4:45 PM
-L I S 461: Data and Algorithms: Ethics and Policy
+May 9, 7:45 AM - 9:45 AM - Location not specified
+MATH 444: Graphs and Networks in Data Science
 Weekly Meetings
-LEC TR 2:30 PM - 3:45 PM Mosse Humanities Building Room 3650
+LEC 001 TR 9:30 AM - 10:45 AM Russell Laboratories Room 184
+This course may have evening midterm exams. Please consult the syllabus for precise information.
+Exams
+May 5, 2:45 PM - 4:45 PM - Location not specified
+MUSIC 113: Music in Performance
+Weekly Meetings
+LEC 002 M 1:20 PM - 2:10 PM Mosse Humanities Building Room 2340
 Exams
 None provided
-STAT 340: Data Science Modeling II
-Weekly Meetings
-LEC TR 1:00 PM - 2:15 PM Educational Sciences Room 204
-DIS W 3:30 PM - 4:20 PM Van Vleck Hall Room B223
-.
-Exams
-December 18, 12:25 PM - 2:25 PM
